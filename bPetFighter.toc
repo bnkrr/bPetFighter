@@ -5,4 +5,5 @@
 ## Interface: 70000
 ## Version: 0.1
 
+settings.lua
 core.lua
