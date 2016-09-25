@@ -1,0 +1,8 @@
+## Title: |cff00f0f0b|rPetFighter
+## Notes: 0.0
+## Author: =.=
+
+## Interface: 70000
+## Version: 0.1
+
+core.lua
