@@ -188,7 +188,7 @@ end
 
 local ticker
 local startTicker = function()
-    ticker = C_Timer.NewTicker(0.9, runmacro)
+    ticker = C_Timer.NewTicker(1.9, runmacro)
 end
 
 local cancelTicker = function()
