@@ -53,12 +53,32 @@ function oneTurnCheck()
     end
 end
 
+function noWaitCheck()   -- low health and no revive pet cd
+    local h1 = C_PetBattles.GetHealth(1,1)
+    local h2 = C_PetBattles.GetHealth(1,2)
+    local h3 = C_PetBattles.GetHealth(1,3)
+    if h1 < 400 and h2 < 400 and h3 < 400 then
+        local now = GetTime()
+        local t, cd = GetSpellCooldown(125439)
+        local t = cd - now + t  -- time left
+        if t > 0 then
+            --C_Timer:NewTicker(t+1, oneTurn, 1)
+            DEFAULT_CHAT_FRAME:AddMessage(string.format("bPetFighter: Wait for %ds", t+1), 255, 255, 255)
+            return false
+        end
+    end
+    return true
+end
+
 function oneTurn()
     if C_PetBattles.IsInBattle() then
         local unchanged = changeCheck()     -- check if need change pet.
         --print(unchanged)
         if unchanged then
             local petIndex = C_PetBattles.GetActivePet(1)
+            if not noWaitCheck() then
+                return nil
+            end
             local sid = C_PetBattles.GetPetSpeciesID(1, petIndex)
             local rotations = getRotations(sid)
             for i, ability in ipairs(rotations) do
@@ -91,12 +111,12 @@ function initStrategy()
 end
 
 function checkDead()
-    --[[if unlocked then
+    if unlocked then
         DEFAULT_CHAT_FRAME:AddMessage("bPetFighter: REVIVE!", 255, 255, 255)
-        CastSpellByID(125439)  -- always check
+        --CastSpellByID(125439)  -- always check
     end
-    return nil]]
-    
+    return nil
+    --[[
     for petIndex = 1, 3 do
         local guid = team_zandalar[petIndex]
         local health = C_PetJournal.GetPetStats(guid)
@@ -107,6 +127,7 @@ function checkDead()
         end
     end
     changeTeam(team_crab)
+    ]]
 end
 
 function handlerPetCombat(event)
@@ -176,22 +197,22 @@ SlashCmdList.BPF_TOGGLE = function() frame:toggleEvent() end
 
 local runmacro = function()
     if not C_PetBattles.IsInBattle() then
-        if not select(2,GetSpellCooldown(125439)) then  -- cd
-            RunMacro("tarr")
-            checkDead()
-        else
-            checkDead()
-            RunMacro("tar00")
+        RunMacro("tar00")
+    else
+        if 0 == GetSpellCooldown(125439) then
+            oneTurn()
         end
     end
 end
 
 local ticker
 local startTicker = function()
-    ticker = C_Timer.NewTicker(1.9, runmacro)
+    DEFAULT_CHAT_FRAME:AddMessage("bPetFighter: START TICKER", 255, 255, 255)
+    ticker = C_Timer.NewTicker(2.9, runmacro)
 end
 
 local cancelTicker = function()
+    DEFAULT_CHAT_FRAME:AddMessage("bPetFighter: CANCEL TICKER", 255, 255, 255)
     ticker:Cancel()
 end
 
