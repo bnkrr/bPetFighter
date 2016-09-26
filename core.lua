@@ -6,6 +6,25 @@ local addon, ns = ...
 --local speciesid = ns.speciesid
 local unlocked = false
 
+local changeTeam = function(team)
+    for i=1,3 do
+        C_PetJournal.SetPetLoadOutInfo(i, team[i])
+    end
+end
+
+local team_zandalar = {
+    "BattlePet-0-000002045475",
+    "BattlePet-0-00000320E206",
+    "BattlePet-0-00000320E209",
+}
+
+local team_crab = {
+    "BattlePet-0-000001C8F08A",
+    "BattlePet-0-000001C8F04B",
+    "BattlePet-0-000001C8F093",
+}
+
+
 function getActivePetSpecies()
     local petIndex = C_PetBattles.GetActivePet(1)
     return C_PetBattles.GetPetSpeciesID(1, petIndex)
@@ -72,24 +91,22 @@ function initStrategy()
 end
 
 function checkDead()
-    if unlocked then
+    --[[if unlocked then
         DEFAULT_CHAT_FRAME:AddMessage("bPetFighter: REVIVE!", 255, 255, 255)
         CastSpellByID(125439)  -- always check
     end
-    return nil
-    --[[
+    return nil]]
+    
     for petIndex = 1, 3 do
-        local guid = C_PetJournal.GetPetLoadOutInfo(petIndex)
+        local guid = team_zandalar[petIndex]
         local health = C_PetJournal.GetPetStats(guid)
-        if health < 1 then
-            if unlocked then
-                CastSpellByID(125439)  -- revive pets
-            end
-            DEFAULT_CHAT_FRAME:AddMessage("bPetFighter: REVIVE!", 255, 255, 255)
-            break
+        --print (health)
+        if health > 0 then
+            changeTeam(team_zandalar)
+            return nil
         end
     end
-    ]]
+    changeTeam(team_crab)
 end
 
 function handlerPetCombat(event)
@@ -159,7 +176,13 @@ SlashCmdList.BPF_TOGGLE = function() frame:toggleEvent() end
 
 local runmacro = function()
     if not C_PetBattles.IsInBattle() then
-        RunMacro("tar00")
+        if not select(2,GetSpellCooldown(125439)) then  -- cd
+            RunMacro("tarr")
+            checkDead()
+        else
+            checkDead()
+            RunMacro("tar00")
+        end
     end
 end
 

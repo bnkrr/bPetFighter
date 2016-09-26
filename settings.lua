@@ -34,7 +34,9 @@ local rotations = {
         {
             id = 3,
             flag = function(self, petIndex)  --trigger when 200% damage
-                if hasAura(2,542,1) then -- 200% damage
+                if C_PetBattles.GetHealth(2,1) < 300 then   -- kill enemy
+                    return select(2,C_PetBattles.GetAbilityState(1, petIndex, self.id)) == 0
+                elseif hasAura(2,542,1) then -- 200% damage
                     return select(2,C_PetBattles.GetAbilityState(1, petIndex, self.id)) == 0
                 else
                     return false
@@ -61,7 +63,6 @@ local rotations = {
         {
             id = nil,  -- init
             flag = function(petIndex)
-                print (petIndex)
                 local petStrategy = ns.strategy[petIndex]
                 if petStrategy.battleState == nil then
                     petStrategy.battleState = {state=2}
@@ -124,8 +125,8 @@ local rotations = {
 }
 
 local speciesid = {
-    [746] = "crab", -- 君王蟹
-    [573] = "crab", -- 塔边小蟹
+    --[746] = "crab", -- 君王蟹
+    --[573] = "crab", -- 塔边小蟹
     [1180] = "zandalar", -- 赞达拉袭胫者
 }
 
