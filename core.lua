@@ -6,25 +6,6 @@ local addon, ns = ...
 --local speciesid = ns.speciesid
 local unlocked = false
 
-local changeTeam = function(team)
-    for i=1,3 do
-        C_PetJournal.SetPetLoadOutInfo(i, team[i])
-    end
-end
-
-local team_zandalar = {
-    "BattlePet-0-000002045475",
-    "BattlePet-0-00000320E206",
-    "BattlePet-0-00000320E209",
-}
-
-local team_crab = {
-    "BattlePet-0-000001C8F08A",
-    "BattlePet-0-000001C8F04B",
-    "BattlePet-0-000001C8F093",
-}
-
-
 function getActivePetSpecies()
     local petIndex = C_PetBattles.GetActivePet(1)
     return C_PetBattles.GetPetSpeciesID(1, petIndex)
@@ -62,7 +43,6 @@ function noWaitCheck()   -- low health and no revive pet cd
         local t, cd = GetSpellCooldown(125439)
         local t = cd - now + t  -- time left
         if t > 0 then
-            --C_Timer:NewTicker(t+1, oneTurn, 1)
             DEFAULT_CHAT_FRAME:AddMessage(string.format("bPetFighter: Wait for %ds", t+1), 255, 255, 255)
             return false
         end
@@ -73,7 +53,6 @@ end
 function oneTurn()
     if C_PetBattles.IsInBattle() then
         local unchanged = changeCheck()     -- check if need change pet.
-        --print(unchanged)
         if unchanged then
             local petIndex = C_PetBattles.GetActivePet(1)
             if not noWaitCheck() then
@@ -116,18 +95,6 @@ function checkDead()
         --CastSpellByID(125439)  -- always check
     end
     return nil
-    --[[
-    for petIndex = 1, 3 do
-        local guid = team_zandalar[petIndex]
-        local health = C_PetJournal.GetPetStats(guid)
-        --print (health)
-        if health > 0 then
-            changeTeam(team_zandalar)
-            return nil
-        end
-    end
-    changeTeam(team_crab)
-    ]]
 end
 
 function handlerPetCombat(event)
@@ -176,21 +143,7 @@ frame:SetScript("OnEvent", frame.onEvent)
 SLASH_BPF_ONETURN1 = "/bpf"
 SlashCmdList.BPF_ONETURN = function()
     oneTurn()
-    --[[if true then
-        oneTurn()
-    elseif unlocked then
-        TargetUnit("超能浣熊")
-        if UnitCanPetBattle("player","target") then
-            InteractUnit("target")
-        end
-    end
-    ]]
 end
-
-
-
---SLASH_BPF_ONETURNPROTECTED1 = "/bpfp"
---SlashCmdList.BPF_ONETURNPROTECTED = function() oneTurnProtected() end
 
 SLASH_BPF_TOGGLE1 = "/bpft"
 SlashCmdList.BPF_TOGGLE = function() frame:toggleEvent() end
@@ -220,4 +173,3 @@ SLASH_BPF_MACRO1 = "/bpfms"
 SlashCmdList.BPF_MACRO = function() startTicker() end
 SLASH_BPF_MACRO_CANCEL1 = "/bpfmc"
 SlashCmdList.BPF_MACRO_CANCEL = function() cancelTicker() end
-

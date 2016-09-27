@@ -59,63 +59,6 @@ local rotations = {
         },
     },
     
-    zandalar_old = {
-        {
-            id = nil,  -- init
-            flag = function(petIndex)
-                local petStrategy = ns.strategy[petIndex]
-                if petStrategy.battleState == nil then
-                    petStrategy.battleState = {state=2}
-                end
-                return false
-            end,
-        },
-        {
-            id = 2,
-            flag = function(petIndex)
-                --print(1)
-                local petStrategy = ns.strategy[petIndex]
-                if petStrategy.battleState.state == 2 and C_PetBattles.GetAbilityState(1,petIndex,2) then
-                    petStrategy.battleState.state = 1
-                    return true
-                else
-                    return false
-                end
-            end,
-        },
-        {
-            id = 1,
-            flag = function(petIndex)
-                --print(2)
-                local petStrategy = ns.strategy[petIndex]
-                if petStrategy.battleState.state == 1 and C_PetBattles.GetAbilityState(1,petIndex,1) then
-                    petStrategy.battleState.state = 3
-                    return true
-                else
-                    return false
-                end
-            end,
-        },
-        {
-            id = 3,
-            flag = function(petIndex)
-                --print(3)
-                local petStrategy = ns.strategy[petIndex]
-                --print(petStrategy.battleState.state)
-                if petStrategy.battleState.state == 3 and C_PetBattles.GetAbilityState(1,petIndex,3) then
-                    petStrategy.battleState.state = 2
-                    return true
-                else
-                    return false
-                end
-            end,
-        },
-        {
-            id = 2,
-            flag = function(petIndex) return true end,
-        },
-    },
-    
     default = {
         {
             id = 1,
@@ -142,12 +85,6 @@ local strategy = {  -- 只有3个，和三个宠物有关。
         change = function(self)
             if C_PetBattles.GetHealth(1,1) < 1 then
                 return true
-            --[[
-            elseif select(2,C_PetBattles.GetAbilityState(1,1,1))>0 and select(2,C_PetBattles.GetAbilityState(1,1,3))>0 then
-                print (C_PetBattles.GetAbilityState(1,1,1))
-                print (C_PetBattles.GetAbilityState(1,1,3))
-                return true
-            ]]
             else
                 return false
             end
@@ -157,11 +94,6 @@ local strategy = {  -- 只有3个，和三个宠物有关。
         end,
         attacked = false,
     },
-    --[[{
-        init = nil,
-        change = function() return C_PetBattles.GetHealth(1,2) < 1 end,
-        oneTurn = nil,
-    },]]
     {
         init = nil,
         change = function(self) return C_PetBattles.GetHealth(1,2) < 1 end,
