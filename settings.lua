@@ -46,7 +46,7 @@ local rotations = {
         {
             id = 1,
             flag = function(self, petIndex)  --trigger when +130 damage
-                if hasAura(2,918,1) then --   +130 damage
+                if hasAura(2,918,2) then --   +130 damage
                     return select(2,C_PetBattles.GetAbilityState(1, petIndex, self.id)) == 0
                 else
                     return false

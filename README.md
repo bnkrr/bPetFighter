@@ -1,1 +1,1 @@
-A wow add-on helps automatic pet battle.
+A wow add-on that helps to automate pet battle.
