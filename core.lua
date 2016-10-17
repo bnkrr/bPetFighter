@@ -110,7 +110,7 @@ function handlerPetCombatOver(event)
 end
 --event handler
 local frame = CreateFrame("Frame")
-frame.flag = false
+frame.flag = true
 
 function frame:onEvent(event, ...)
     if event == "PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE" then
@@ -173,3 +173,24 @@ SLASH_BPF_MACRO1 = "/bpfms"
 SlashCmdList.BPF_MACRO = function() startTicker() end
 SLASH_BPF_MACRO_CANCEL1 = "/bpfmc"
 SlashCmdList.BPF_MACRO_CANCEL = function() cancelTicker() end
+
+
+local r = function()
+    if not C_PetBattles.IsInBattle() then
+        RunMacroText("/cast 复活战斗宠物")
+        RunMacroText("/tar 幸运的小艺")
+        RunMacroText("/run InteractUnit(\"target\")")
+    else
+        if 0 == GetSpellCooldown(125439) then
+            oneTurn()
+        end
+    end
+end
+
+
+SLASH_BPF_ALLINONE1 = "/bpet1"
+SlashCmdList.BPF_ALLINONE = function()
+    frame:RegisterEvent("PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE")
+    ticker = C_Timer.NewTicker(2.9, r)
+    DEFAULT_CHAT_FRAME:AddMessage("bPetFighter", 255, 255, 255)
+end
