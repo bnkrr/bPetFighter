@@ -86,12 +86,12 @@ function initStrategy()
             petStrategy:init()
         end
     end
-    DEFAULT_CHAT_FRAME:AddMessage("bPetFighter: INIT STRATEGY!", 255, 255, 255)
+    --DEFAULT_CHAT_FRAME:AddMessage("bPetFighter: INIT STRATEGY!", 255, 255, 255)
 end
 
 function checkDead()
     if unlocked then
-        DEFAULT_CHAT_FRAME:AddMessage("bPetFighter: REVIVE!", 255, 255, 255)
+        --DEFAULT_CHAT_FRAME:AddMessage("bPetFighter: REVIVE!", 255, 255, 255)
         --CastSpellByID(125439)  -- always check
     end
     return nil
@@ -138,41 +138,6 @@ end
 frame:RegisterEvent("PET_BATTLE_OPENING_START")
 frame:RegisterEvent("PET_BATTLE_OVER")
 frame:SetScript("OnEvent", frame.onEvent)
-
-
-SLASH_BPF_ONETURN1 = "/bpf"
-SlashCmdList.BPF_ONETURN = function()
-    oneTurn()
-end
-
-SLASH_BPF_TOGGLE1 = "/bpft"
-SlashCmdList.BPF_TOGGLE = function() frame:toggleEvent() end
-
-local runmacro = function()
-    if not C_PetBattles.IsInBattle() then
-        RunMacro("tar00")
-    else
-        if 0 == GetSpellCooldown(125439) then
-            oneTurn()
-        end
-    end
-end
-
-local ticker
-local startTicker = function()
-    DEFAULT_CHAT_FRAME:AddMessage("bPetFighter: START TICKER", 255, 255, 255)
-    ticker = C_Timer.NewTicker(2.9, runmacro)
-end
-
-local cancelTicker = function()
-    DEFAULT_CHAT_FRAME:AddMessage("bPetFighter: CANCEL TICKER", 255, 255, 255)
-    ticker:Cancel()
-end
-
-SLASH_BPF_MACRO1 = "/bpfms"
-SlashCmdList.BPF_MACRO = function() startTicker() end
-SLASH_BPF_MACRO_CANCEL1 = "/bpfmc"
-SlashCmdList.BPF_MACRO_CANCEL = function() cancelTicker() end
 
 
 local r = function()
